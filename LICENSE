@@ -1,27 +1,29 @@
-﻿All portions of this repository are under one of two licenses. 
+﻿All portions of this repository are under one of two licenses.
 
 - Everything inside the autogpt_platform folder is under the Polyform Shield License.
-- Everything outside the autogpt_platform folder is under the MIT License. 
+- Everything outside the autogpt_platform folder is under the MIT License.
 
 More info:
 
 **Polyform Shield License:**
 Code and content within the `autogpt_platform` folder is licensed under the Polyform Shield License. This new project is our in-developlemt platform for building, deploying and managing agents.
-Read more about this effort here: https://agpt.co/blog/introducing-the-autogpt-platform
+Read more about this effort here: <https://agpt.co/blog/introducing-the-autogpt-platform>
 
 **MIT License:**
 All other portions of the AutoGPT repository (i.e., everything outside the `autogpt_platform` folder) are licensed under the MIT License. This includes:
-- The Original, stand-alone AutoGPT Agent
-- Forge: https://github.com/Significant-Gravitas/AutoGPT/tree/master/classic/forge
-- AG Benchmark: https://github.com/Significant-Gravitas/AutoGPT/tree/master/classic/benchmark
-- AutoGPT Classic GUI: https://github.com/Significant-Gravitas/AutoGPT/tree/master/classic/frontend.
 
-We also publish additional work under the MIT Licence in other repositories, such as GravitasML (https://github.com/Significant-Gravitas/gravitasml) which is developed for and used in the AutoGPT Platform, and our [Code Ability](https://github.com/Significant-Gravitas/AutoGPT-Code-Ability) project.
+- The Original, stand-alone AutoGPT Agent
+- Forge: <https://github.com/Significant-Gravitas/AutoGPT/tree/master/classic/forge>
+- AG Benchmark: <https://github.com/Significant-Gravitas/AutoGPT/tree/master/classic/benchmark>
+- AutoGPT Classic GUI: <https://github.com/Significant-Gravitas/AutoGPT/tree/master/classic/frontend>.
+
+We also publish additional work under the MIT Licence in other repositories, such as GravitasML (<https://github.com/Significant-Gravitas/gravitasml>) which is developed for and used in the AutoGPT Platform, and our [Code Ability](https://github.com/Significant-Gravitas/AutoGPT-Code-Ability) project.
 
 Both licences are available to read below:
 
 =====================================================
 -----------------------------------------------------
+
 =====================================================
 
 # PolyForm Shield License 1.0.0
@@ -61,7 +63,7 @@ URL for them above, as well as copies of any plain-text lines
 beginning with `Required Notice:` that the licensor provided
 with the software.  For example:
 
-> Required Notice: Copyright Yoyodyne, Inc. (http://example.com)
+> Required Notice: Copyright Yoyodyne, Inc. (<http://example.com>)
 
 ## Changes and New Works License
 
@@ -112,7 +114,7 @@ line beginning with `Licensor Line of Business:` with the
 software that mentions that line of business.  For example:
 
 > Licensor Line of Business: YoyodyneCMS Content Management
-System (http://example.com/cms)
+System (<http://example.com/cms>)
 
 ## Sales of Business
 
@@ -191,13 +193,12 @@ of your licenses.
 
 =====================================================
 -----------------------------------------------------
+
 =====================================================
 
 MIT License
 
-
 Copyright (c) 2023 Toran Bruce Richards
-
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -206,10 +207,8 @@ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 
-
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
-
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,

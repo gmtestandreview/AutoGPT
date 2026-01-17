@@ -343,15 +343,38 @@ class CloudStorageHandler:
             PermissionError: If access is denied
         """
 
-        # Normalize the path to prevent path traversal attacks
-        normalized_path = os.path.normpath(blob_name)
+        # Normalize the path to prevent path traversal attacks and handle
+        # different path separator styles (Windows backslashes vs POSIX slashes).
+        # Also accept full cloud paths like 'gcs://bucket/uploads/...'.
+
+        # If a scheme is present (e.g., gcs://bucket/path), strip scheme and bucket
+        normalized = blob_name
+        if "//" in normalized and ":" in normalized.split("//")[0]:
+            # crude scheme detection (e.g., gcs://bucket/blob)
+            try:
+                remainder = normalized.split("://", 1)[1]
+                # remainder should be 'bucket/path/to/blob'
+                if "/" in remainder:
+                    normalized = remainder.split("/", 1)[1]
+                else:
+                    # Nothing after bucket
+                    normalized = ""
+            except Exception:
+                normalized = blob_name
+
+        # Normalize separators to forward slashes and collapse repeats
+        normalized = normalized.replace("\\", "/")
+        while "//" in normalized:
+            normalized = normalized.replace("//", "/")
 
         # Ensure the normalized path doesn't contain any path traversal attempts
-        if ".." in normalized_path or normalized_path.startswith("/"):
+        # (check path components for '..' and disallow leading slash)
+        parts_for_traversal = normalized.split("/") if normalized else []
+        if ".." in parts_for_traversal or (normalized.startswith("/") and normalized != "/"):
             raise PermissionError("Invalid file path: path traversal detected")
 
         # Split into components and validate each part
-        path_parts = normalized_path.split("/")
+        path_parts = parts_for_traversal
 
         # Validate path structure: must start with "uploads/"
         if not path_parts or path_parts[0] != "uploads":

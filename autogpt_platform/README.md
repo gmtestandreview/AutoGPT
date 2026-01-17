@@ -129,9 +129,11 @@ Here are some common scenarios where you might use multiple Docker Compose comma
    This watches for changes in your code and automatically updates the relevant services.
 
 6. Checking the status of services:
+
    ```
    docker compose ps
    ```
+
    This shows the current status of all services defined in your docker-compose.yml file.
 
 These scenarios demonstrate how to use Docker Compose commands in combination to manage your AutoGPT Platform effectively.
@@ -183,6 +185,7 @@ If you need to update the API client after making changes to the backend API:
    ```
 
 2. Generate the updated API client:
+
    ```
    pnpm generate:api
    ```
