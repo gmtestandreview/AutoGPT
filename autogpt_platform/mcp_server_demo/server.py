@@ -85,7 +85,7 @@ def add(a: int, b: int) -> int:
     """
     try:
         return int(a) + int(b)
-    except Exception as exc:  # broad except for input validation
+    except Exception:  # broad except for input validation
         logger.exception("add: invalid inputs")
         raise
 

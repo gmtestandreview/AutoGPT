@@ -458,50 +458,96 @@ class Config(UpdateTrackingModel["Config"], BaseSettings):
         "External apps (like Autopilot) must have their callback URLs start with one of these origins.",
     )
 
+    @staticmethod
+    def _validate_regex_origin(origin: str) -> bool:
+        """Validate and compile regex pattern.
+        
+        Returns True if valid regex origin, raises ValueError otherwise.
+        """
+        pattern = origin[len("regex:") :]
+        if not pattern:
+            raise ValueError("Invalid regex pattern: pattern cannot be empty")
+        try:
+            re.compile(pattern)
+            return True
+        except re.error as exc:
+            raise ValueError(
+                f"Invalid regex pattern '{pattern}': {exc}"
+            ) from exc
+
+    @staticmethod
+    def _extract_port(origin: str, host: str) -> str:
+        """Extract port from origin URL for given host.
+        
+        Raises ValueError if port is not found.
+        """
+        try:
+            port = origin.split(":")[2]
+            return port
+        except IndexError as exc:
+            raise ValueError(
+                f"{host} origins must include an explicit port, "
+                f"e.g. http://{host}:3000"
+            ) from exc
+
+    def _process_http_origin(
+        self,
+        origin: str,
+        localhost_ports: Set[str],
+        ip127_ports: Set[str],
+    ) -> None:
+        """Process HTTP/HTTPS origin and extract ports.
+        
+        Updates localhost_ports and ip127_ports sets with extracted ports.
+        """
+        if "localhost" in origin:
+            port = self._extract_port(origin, "localhost")
+            localhost_ports.add(port)
+
+        if "127.0.0.1" in origin:
+            port = self._extract_port(origin, "127.0.0.1")
+            ip127_ports.add(port)
+
+    def _validate_single_origin(
+        self,
+        raw_origin: str,
+        validated: List[str],
+        localhost_ports: Set[str],
+        ip127_ports: Set[str],
+    ) -> None:
+        """Validate a single origin and add to validated list or update port sets."""
+        origin = raw_origin.strip()
+
+        # Handle regex origins
+        if origin.startswith("regex:"):
+            self._validate_regex_origin(origin)
+            validated.append(origin)
+            return
+
+        # Handle HTTP/HTTPS origins
+        if origin.startswith(("http://", "https://")):
+            self._process_http_origin(origin, localhost_ports, ip127_ports)
+            validated.append(origin)
+            return
+
+        # Invalid origin format
+        raise ValueError(f"Invalid URL or regex origin: {origin}")
+
     @field_validator("backend_cors_allow_origins")
     @classmethod
     def validate_cors_allow_origins(cls, v: List[str]) -> List[str]:
+        """Validate CORS allow origins list."""
         validated: List[str] = []
-        localhost_ports: set[str] = set()
-        ip127_ports: set[str] = set()
+        localhost_ports: Set[str] = set()
+        ip127_ports: Set[str] = set()
 
+        instance = cls()
         for raw_origin in v:
-            origin = raw_origin.strip()
-            if origin.startswith("regex:"):
-                pattern = origin[len("regex:") :]
-                if not pattern:
-                    raise ValueError("Invalid regex pattern: pattern cannot be empty")
-                try:
-                    re.compile(pattern)
-                except re.error as exc:
-                    raise ValueError(
-                        f"Invalid regex pattern '{pattern}': {exc}"
-                    ) from exc
-                validated.append(origin)
-                continue
+            instance._validate_single_origin(
+                raw_origin, validated, localhost_ports, ip127_ports
+            )
 
-            if origin.startswith(("http://", "https://")):
-                if "localhost" in origin:
-                    try:
-                        port = origin.split(":")[2]
-                        localhost_ports.add(port)
-                    except IndexError as exc:
-                        raise ValueError(
-                            "localhost origins must include an explicit port, e.g. http://localhost:3000"
-                        ) from exc
-                if "127.0.0.1" in origin:
-                    try:
-                        port = origin.split(":")[2]
-                        ip127_ports.add(port)
-                    except IndexError as exc:
-                        raise ValueError(
-                            "127.0.0.1 origins must include an explicit port, e.g. http://127.0.0.1:3000"
-                        ) from exc
-                validated.append(origin)
-                continue
-
-            raise ValueError(f"Invalid URL or regex origin: {origin}")
-
+        # Add complementary localhost/127.0.0.1 entries
         for port in ip127_ports - localhost_ports:
             validated.append(f"http://localhost:{port}")
         for port in localhost_ports - ip127_ports:

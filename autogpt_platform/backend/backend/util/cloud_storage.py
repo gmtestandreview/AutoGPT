@@ -7,10 +7,12 @@ import logging
 import os.path
 import uuid
 from datetime import datetime, timedelta, timezone
+from types import TracebackType
 from typing import Tuple
 
 import aiohttp
-from gcloud.aio import storage as async_gcs_storage
+from gcloud.aio import storage as async_gcs_storage  # type: ignore[import-untyped]
+from gcloud.aio.storage import Storage as AsyncGCSStorage  # type: ignore[import-untyped]
 from google.cloud import storage as gcs_storage
 
 from backend.util.settings import Config
@@ -41,7 +43,7 @@ class CloudStorageHandler:
         self._sync_gcs_client = None  # Only for signed URLs
         self._session = None
 
-    async def _get_async_gcs_client(self):
+    async def _get_async_gcs_client(self) -> AsyncGCSStorage:
         """Get or create async GCS client, ensuring it's created in proper async context."""
         # Check if we already have a client
         if self._async_gcs_client is not None:
@@ -95,11 +97,16 @@ class CloudStorageHandler:
         """Async context manager entry."""
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> None:
         """Async context manager exit."""
         await self.close()
 
-    def _get_sync_gcs_client(self):
+    def _get_sync_gcs_client(self) -> gcs_storage.Client:
         """Lazy initialization of sync GCS client (only for signed URLs)."""
         if self._sync_gcs_client is None:
             # Use Application Default Credentials (ADC) - same as media.py

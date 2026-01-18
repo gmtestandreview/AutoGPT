@@ -1,11 +1,11 @@
----
-title: "Setup React Component"
-description: "Create a new React component with proper TypeScript typing, hooks, and testing setup"
-category: "Frontend Development"
-tags: ["react", "typescript", "components", "frontend"]
-version: "1.0.0"
----
+`````markdown
+# title: "Setup React Component"
+## description: "Create a new React component with proper TypeScript typing, hooks, and testing setup"
+## category: "Frontend Development"
+## tags: ["react", "typescript", "components", "frontend"]
+## version: "1.0.0"
 
+````markdown
 # Setup React Component
 
 You are an expert React developer working on the AutoGPT platform. Create a new React component with the following specifications:
@@ -102,3 +102,7 @@ export default {COMPONENT_NAME};
 6. **Integration:** Works properly in AutoGPT context
 
 Please implement the component following these guidelines and ensure it integrates seamlessly with the AutoGPT platform architecture.
+
+````
+
+`````

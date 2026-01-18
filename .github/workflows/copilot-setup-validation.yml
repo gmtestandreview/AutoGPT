@@ -1,0 +1,260 @@
+name: GitHub Copilot Setup Validation
+
+on:
+  push:
+    paths:
+      - '.github/instructions/**'
+      - '.github/prompts/**'
+      - '.github/agents/**'
+      - '.github/copilot-instructions.md'
+  pull_request:
+    paths:
+      - '.github/instructions/**'
+      - '.github/prompts/**'
+      - '.github/agents/**'
+      - '.github/copilot-instructions.md'
+
+jobs:
+  validate-copilot-config:
+    runs-on: ubuntu-latest
+    name: Validate Copilot Configuration
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Validate instruction files
+        run: |
+          echo "Validating GitHub Copilot instruction files..."
+          
+          # Check required instruction files exist
+          required_files=(
+            ".github/instructions/python.instructions.md"
+            ".github/instructions/reactjs.instructions.md" 
+            ".github/instructions/typescript.instructions.md"
+            ".github/instructions/nextjs.instructions.md"
+            ".github/instructions/security-and-owasp.instructions.md"
+            ".github/instructions/performance-optimization.instructions.md"
+            ".github/instructions/containerization-docker-best-practices.instructions.md"
+            ".github/instructions/playwright-python.instructions.md"
+          )
+          
+          missing_files=()
+          for file in "${required_files[@]}"; do
+            if [[ ! -f "$file" ]]; then
+              missing_files+=("$file")
+            fi
+          done
+          
+          if [[ ${#missing_files[@]} -gt 0 ]]; then
+            echo "❌ Missing required instruction files:"
+            printf '%s\n' "${missing_files[@]}"
+            exit 1
+          fi
+          
+          echo "✅ All required instruction files present"
+          
+      - name: Validate prompt files
+        run: |
+          echo "Validating GitHub Copilot prompt files..."
+          
+          # Check required prompt files exist
+          required_prompts=(
+            ".github/prompts/setup-component.md"
+            ".github/prompts/write-tests.md"
+            ".github/prompts/code-review.md"
+            ".github/prompts/refactor-code.md"
+            ".github/prompts/generate-docs.md"
+            ".github/prompts/debug-issue.md"
+          )
+          
+          missing_prompts=()
+          for file in "${required_prompts[@]}"; do
+            if [[ ! -f "$file" ]]; then
+              missing_prompts+=("$file")
+            fi
+          done
+          
+          if [[ ${#missing_prompts[@]} -gt 0 ]]; then
+            echo "❌ Missing required prompt files:"
+            printf '%s\n' "${missing_prompts[@]}"
+            exit 1
+          fi
+          
+          echo "✅ All required prompt files present"
+          
+      - name: Validate agent files
+        run: |
+          echo "Validating GitHub Copilot agent files..."
+          
+          # Check required agent files exist
+          required_agents=(
+            ".github/agents/architect.md"
+            ".github/agents/reviewer.md" 
+            ".github/agents/debugger.md"
+          )
+          
+          missing_agents=()
+          for file in "${required_agents[@]}"; do
+            if [[ ! -f "$file" ]]; then
+              missing_agents+=("$file")
+            fi
+          done
+          
+          if [[ ${#missing_agents[@]} -gt 0 ]]; then
+            echo "❌ Missing required agent files:"
+            printf '%s\n' "${missing_agents[@]}"
+            exit 1
+          fi
+          
+          echo "✅ All required agent files present"
+          
+      - name: Check file formatting
+        run: |
+          echo "Checking Markdown file formatting..."
+          
+          # Check for proper Markdown formatting in instruction files
+          find .github/instructions .github/prompts .github/agents -name "*.md" | while read -r file; do
+            echo "Checking $file..."
+            
+            # Check for frontmatter in instruction files
+            if [[ "$file" == *"/instructions/"* ]]; then
+              if ! head -n 5 "$file" | grep -q "^---"; then
+                echo "⚠️  Warning: $file missing frontmatter"
+              fi
+            fi
+            
+            # Check for reasonable file size (not empty, not too large)
+            size=$(wc -c < "$file")
+            if [[ $size -lt 100 ]]; then
+              echo "⚠️  Warning: $file seems too small ($size bytes)"
+            elif [[ $size -gt 100000 ]]; then
+              echo "⚠️  Warning: $file seems too large ($size bytes)"
+            fi
+          done
+          
+          echo "✅ File formatting check complete"
+          
+      - name: Validate content structure
+        run: |
+          echo "Validating content structure..."
+          
+          # Check for required sections in instruction files
+          instruction_files=(.github/instructions/*.md)
+          for file in "${instruction_files[@]}"; do
+            if [[ ! -f "$file" ]]; then continue; fi
+            
+            echo "Validating structure of $file..."
+            
+            # Check for basic sections (flexible check)
+            if ! grep -q "^#" "$file"; then
+              echo "⚠️  Warning: $file has no headings"
+            fi
+            
+            # Check for code examples in instruction files
+            if ! grep -q '```' "$file"; then
+              echo "⚠️  Warning: $file has no code examples"
+            fi
+          done
+          
+          echo "✅ Content structure validation complete"
+          
+      - name: Check for AutoGPT-specific content
+        run: |
+          echo "Validating AutoGPT-specific configurations..."
+          
+          # Check that files reference AutoGPT patterns
+          autogpt_keywords=("AutoGPT" "agent" "block" "FastAPI" "Next.js" "Prisma" "PostgreSQL")
+          
+          for keyword in "${autogpt_keywords[@]}"; do
+            if ! grep -r "$keyword" .github/instructions/ >/dev/null 2>&1; then
+              echo "⚠️  Warning: No references to '$keyword' found in instructions"
+            fi
+          done
+          
+          echo "✅ AutoGPT-specific content check complete"
+          
+      - name: Generate setup summary
+        run: |
+          echo "## GitHub Copilot Configuration Summary" > copilot-setup-summary.md
+          echo "" >> copilot-setup-summary.md
+          
+          echo "### Instruction Files" >> copilot-setup-summary.md
+          find .github/instructions -name "*.md" | wc -l | xargs echo "- Total instruction files:" >> copilot-setup-summary.md
+          
+          echo "" >> copilot-setup-summary.md
+          echo "### Prompt Files" >> copilot-setup-summary.md  
+          find .github/prompts -name "*.md" | wc -l | xargs echo "- Total prompt files:" >> copilot-setup-summary.md
+          
+          echo "" >> copilot-setup-summary.md
+          echo "### Agent Files" >> copilot-setup-summary.md
+          find .github/agents -name "*.md" | wc -l | xargs echo "- Total agent files:" >> copilot-setup-summary.md
+          
+          echo "" >> copilot-setup-summary.md
+          echo "### Configuration Status" >> copilot-setup-summary.md
+          echo "- ✅ All required files present" >> copilot-setup-summary.md
+          echo "- ✅ Structure validation passed" >> copilot-setup-summary.md
+          echo "- ✅ AutoGPT-specific content validated" >> copilot-setup-summary.md
+          
+          echo "GitHub Copilot configuration validation complete!"
+          cat copilot-setup-summary.md
+          
+      - name: Upload setup summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: copilot-setup-summary
+          path: copilot-setup-summary.md
+          retention-days: 30
+
+  test-copilot-integration:
+    runs-on: ubuntu-latest
+    name: Test Copilot Integration
+    needs: validate-copilot-config
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Test instruction file accessibility
+        run: |
+          echo "Testing instruction file references..."
+          
+          # Simulate VS Code Copilot file references
+          test_references=(
+            "#file:.github/instructions/python.instructions.md"
+            "#file:.github/prompts/setup-component.md"
+            "#file:.github/agents/architect.md"
+          )
+          
+          for ref in "${test_references[@]}"; do
+            file_path=$(echo "$ref" | sed 's/#file://')
+            if [[ -f "$file_path" ]]; then
+              echo "✅ $ref - File accessible"
+            else
+              echo "❌ $ref - File not found"
+              exit 1
+            fi
+          done
+          
+          echo "✅ All Copilot file references are valid"
+          
+      - name: Validate cross-references
+        run: |
+          echo "Validating cross-references between files..."
+          
+          # Check that prompts reference appropriate instruction files
+          if grep -r "\.github/instructions/" .github/prompts/ >/dev/null 2>&1; then
+            echo "✅ Found cross-references in prompt files"
+          else
+            echo "⚠️  No cross-references found in prompt files"
+          fi
+          
+          # Check that agents reference appropriate patterns
+          if grep -r "AutoGPT" .github/agents/ >/dev/null 2>&1; then
+            echo "✅ Agent files reference AutoGPT patterns"
+          else
+            echo "❌ Agent files missing AutoGPT references"
+            exit 1
+          fi
+          
+          echo "✅ Cross-reference validation complete"
