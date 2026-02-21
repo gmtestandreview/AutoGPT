@@ -1,6 +1,6 @@
-Source: <https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/containerization-docker-best-practices.instructions.md>
-
 # Containerization & Docker Best Practices
+
+Source: <https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/containerization-docker-best-practices.instructions.md>
 
 ## Your Mission
 

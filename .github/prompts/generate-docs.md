@@ -224,21 +224,21 @@ export function AgentCard({
 - Use consistent heading structure
 - Add table of contents for navigation
 
-### API Documentation
+### API Documentation Format
 
 - Generate from OpenAPI specifications
 - Use tools like Swagger UI or Redoc
 - Include interactive examples
 - Provide SDKs and client libraries
 
-### Component Documentation
+### Component Documentation Format
 
 - Use Storybook for React components
 - Include controls for interactive testing
 - Document different component states
 - Provide usage guidelines
 
-### Architecture Documentation
+### Architecture Documentation Format
 
 - Use Mermaid diagrams for system architecture
 - Create sequence diagrams for complex flows

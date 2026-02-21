@@ -1,7 +1,7 @@
 ---
 agent: 'agent'
 model: Claude Sonnet 4
-tools: ['edit', 'githubRepo', 'changes', 'problems', 'search', 'runCommands', 'web/fetch']
+tools: ['edit', 'web/githubRepo', 'search/changes', 'read/problems', 'search', 'execute/getTerminalOutput', 'execute/runInTerminal', 'read/terminalLastCommand', 'read/terminalSelection', 'web/fetch']
 description: 'Set up complete GitHub Copilot configuration for a new project based on technology stack'
 ---
 
@@ -189,8 +189,7 @@ Use this frontmatter structure for all files:
 applyTo: "**/*.ts,**/*.tsx"
 ---
 # Project coding standards for TypeScript and React
-
-Apply the [general coding guidelines](../instructions/general-coding.instructions.md) to all code.
+Apply the repository's general coding guidelines to all code. If a separate general-coding.instructions.md file is missing, follow the guidelines in this document as the default.
 
 ## TypeScript Guidelines
 - Use TypeScript for all new code

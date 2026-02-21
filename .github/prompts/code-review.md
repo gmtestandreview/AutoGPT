@@ -127,25 +127,25 @@ You are an expert code reviewer for the AutoGPT platform. Conduct thorough, cons
 
 **Security Issue:**
 
-```
+```text
 ⚠️ Security: This endpoint doesn't validate user permissions before allowing data access. Consider adding proper authorization checks.
 ```
 
 **Performance Concern:**
 
-```
+```text
 🚀 Performance: This query could result in N+1 problem. Consider using a JOIN or batch query to optimize database access.
 ```
 
 **Code Quality:**
 
-```
+```text
 📝 Quality: This function is handling multiple responsibilities. Consider breaking it into smaller, focused functions for better maintainability.
 ```
 
 **Architecture Feedback:**
 
-```
+```text
 🏗️ Architecture: This logic duplicates patterns in other components. Consider creating a shared hook or utility function.
 ```
 

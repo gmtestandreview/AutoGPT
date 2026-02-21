@@ -1,4 +1,9 @@
+# AutoGPT Project Folder Structure Blueprint
+
 ---
+
+```text
+
 title: "AutoGPT Project Folder Structure Blueprint"
 description: "Comprehensive guide for maintaining consistent code organization in the AutoGPT monorepo"
 last_updated: "2026-01-18"
@@ -7,9 +12,9 @@ architecture: "Microservices with Monorepo"
 includes_frontend: true
 includes_microservices: true
 is_monorepo: true
----
+```
 
-# AutoGPT Project Folder Structure Blueprint
+---
 
 ## Auto-Detection Results
 
@@ -71,7 +76,7 @@ Services are organized as **domain-bounded contexts** with:
 
 ### Complete Monorepo Structure (ASCII Tree - Depth 3)
 
-```
+```ASCII
 AutoGPT/
 ├── .github/                          # GitHub workflows, issue templates, Copilot configuration
 │   ├── workflows/                    # CI/CD pipelines for backend, frontend, and platform
@@ -114,7 +119,7 @@ AutoGPT/
 └── assets/                           # Repository-wide static assets
 ```
 
-### Content Statistics
+### Directory Statistics
 
 - **Total Directories**: ~150+ at depth 3
 - **Primary Technology Split**: 60% Python, 35% TypeScript, 5% Other
@@ -131,7 +136,7 @@ AutoGPT/
 
 **Primary Structure Pattern**: **Layered Architecture with Domain Separation**
 
-```
+```ASCII
 backend/
 ├── backend/                          # Core application logic
 │   ├── api/                          # FastAPI routers and endpoint definitions
@@ -173,6 +178,9 @@ backend/
 - **Domain Services**: Use case-driven business logic separation
 - **Infrastructure Separation**: Database, external integrations, and monitoring isolated
 - **Test Co-location**: Tests organized by type with shared fixtures
+
+```ASCII
+
 ├── 📄 AGENTS.md                           # Contribution guide for platform development
 ├── 📄 CONTRIBUTING.md                     # Repository contribution guidelines
 ├── 📄 SECURITY.md                         # Security policy and vulnerability reporting
@@ -223,7 +231,7 @@ backend/
 
 ### Backend Detailed Structure
 
-```
+```ASCII
 
 autogpt_platform/backend/
 ├── 📄 pyproject.toml                      # Poetry dependency management
@@ -279,7 +287,7 @@ autogpt_platform/backend/
 
 ### Frontend Detailed Structure
 
-```
+```ASCII
 
 autogpt_platform/frontend/
 ├── 📄 package.json                        # pnpm dependencies & scripts
@@ -363,7 +371,7 @@ autogpt_platform/frontend/
 
 ### Shared Libraries Structure
 
-```
+```ASCII
 
 autogpt_platform/autogpt_libs/
 ├── 📄 pyproject.toml                      # Package definition
@@ -386,7 +394,7 @@ autogpt_platform/autogpt_libs/
 
 ---
 
-## 3. Key Directory Analysis
+## 4. Key Organization Analysis
 
 ### Backend Organization
 
@@ -504,7 +512,7 @@ blocks/
 
 **Organization**:
 
-```
+```ASCII
 components/
 ├── atoms/         # Buttons, Inputs, Labels (basic elements)
 ├── molecules/     # Forms, Cards, Modals (composed atoms)
@@ -753,7 +761,7 @@ export { Button };        // ✓ OK
 
 **Principle**: Blocks are categorized by function and domain
 
-```
+```ASCII
 
 blocks/
 ├── ai_blocks/
