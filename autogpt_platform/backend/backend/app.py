@@ -1,9 +1,11 @@
 import logging
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, cast
 
-from dotenv import load_dotenv
-
-load_dotenv()
+try:
+    from dotenv import load_dotenv  # type: ignore
+    load_dotenv()
+except ImportError:
+    pass
 
 if TYPE_CHECKING:
     from backend.util.process import AppProcess
@@ -11,7 +13,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def run_processes(*processes: "AppProcess", **kwargs):
+def run_processes(*processes: "AppProcess", **kwargs: Any) -> None:
     """
     Execute all processes in the app. The last process is run in the foreground.
     Includes enhanced error handling and process lifecycle management.
@@ -19,10 +21,10 @@ def run_processes(*processes: "AppProcess", **kwargs):
     try:
         # Run all processes except the last one in the background.
         for process in processes[:-1]:
-            process.start(background=True, **kwargs)
+            cast(Any, process).start(background=True, silent=False)
 
         # Run the last process in the foreground.
-        processes[-1].start(background=False, **kwargs)
+        cast(Any, processes[-1]).start(background=False, silent=False)
     finally:
         for process in processes:
             try:
@@ -31,7 +33,7 @@ def run_processes(*processes: "AppProcess", **kwargs):
                 logger.exception(f"[{process.service_name}] unable to stop: {e}")
 
 
-def main(**kwargs):
+def main(**kwargs: Any) -> None:
     """
     Run all the processes required for the AutoGPT-server (REST and WebSocket APIs).
     """
